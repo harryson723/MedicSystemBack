@@ -1,6 +1,7 @@
 package com.application.rest.services.impl;
 
 import com.application.rest.entities.UserEntity;
+import com.application.rest.entities.types.RolType;
 import com.application.rest.persistence.IUserDAO;
 import com.application.rest.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,16 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<UserEntity> findAll() {
         return (List<UserEntity>) userDAO.findAll();
+    }
+
+    @Override
+    public List<UserEntity> findByRolesName(RolType roleName) {
+        return (List<UserEntity>) userDAO.findByRolesName(roleName);
+    }
+
+    @Override
+    public Optional<UserEntity> findByDocumentNumber(String documentNumber) {
+        return userDAO.findByDocumentNumber(documentNumber);
     }
 
     @Override

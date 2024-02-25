@@ -1,0 +1,1 @@
+INSERT INTO `service` (`price`, `id`, `provider_id`, `name`, `description`, `status`, `type_service`) VALUES ('1000', NULL, '2', 'Servicio 1', NULL, 'AVAILABLE', 'PSICOLOGICO');
