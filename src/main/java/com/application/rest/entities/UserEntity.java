@@ -35,7 +35,7 @@ public class UserEntity {
     @Column(name = "username", nullable = false, unique = true, length = 30)
     private String username;
 
-    @NotBlank @JsonIgnore
+    @NotBlank
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -75,7 +75,6 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIgnore
     private Set<RoleEntity> roles;
 
 }

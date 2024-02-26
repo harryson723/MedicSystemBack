@@ -13,5 +13,5 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
     List<UserEntity> findByRolesName(RolType roleName);
 
-    Optional<UserEntity> findByDocumentNumber(String documentNumber);
+    Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName);
 }

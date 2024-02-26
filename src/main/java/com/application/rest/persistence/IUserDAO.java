@@ -12,7 +12,7 @@ public interface IUserDAO {
     Optional<UserEntity> findById(Long id);
     List<UserEntity> findByRolesName(RolType roleName);
 
-    Optional<UserEntity> findByDocumentNumber(String documentNumber);
+    Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName);
 
     UserEntity save(UserEntity user);
 

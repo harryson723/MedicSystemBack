@@ -30,8 +30,8 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public Optional<UserEntity> findByDocumentNumber(String documentNumber) {
-        return  userRepository.findByDocumentNumber(documentNumber);
+    public Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName) {
+        return  userRepository.findByDocumentNumberAndRolesName(documentNumber, roleName);
     }
 
     @Override

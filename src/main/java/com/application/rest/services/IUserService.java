@@ -10,7 +10,7 @@ public interface IUserService {
     List<UserEntity> findAll();
     List<UserEntity> findByRolesName(RolType roleName);
 
-    Optional<UserEntity> findByDocumentNumber(String documentNumber);
+    Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName);
 
     Optional<UserEntity> findById(Long id);
 

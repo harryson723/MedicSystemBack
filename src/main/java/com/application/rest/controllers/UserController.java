@@ -77,9 +77,9 @@ public class UserController {
                 .build();
         return  ResponseEntity.ok(userDTO);
     }
-    @GetMapping("/documentNumber/{documentNumber}")
-    public ResponseEntity<?> findByDocumentNumber(@PathVariable String documentNumber) {
-        Optional<UserEntity> userOptional = userService.findByDocumentNumber(documentNumber);
+    @GetMapping("/documentNumber")
+    public ResponseEntity<?> findByDocumentNumber(@RequestParam String documentNumber, @RequestParam String rol) {
+        Optional<UserEntity> userOptional = userService.findByDocumentNumberAndRolesName(documentNumber, RolType.valueOf(rol));
         if(userOptional.isEmpty()) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "No existe el documento ingresado");

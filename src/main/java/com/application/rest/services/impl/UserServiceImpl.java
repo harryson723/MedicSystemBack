@@ -25,8 +25,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Optional<UserEntity> findByDocumentNumber(String documentNumber) {
-        return userDAO.findByDocumentNumber(documentNumber);
+    public Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName) {
+        return userDAO.findByDocumentNumberAndRolesName(documentNumber, roleName);
     }
 
     @Override
