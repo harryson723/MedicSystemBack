@@ -2,15 +2,21 @@ package com.application.rest.controllers;
 
 import com.application.rest.controllers.dto.ServiceDTO;
 import com.application.rest.entities.ServiceEntity;
+import com.application.rest.entities.SuscriptionEntity;
 import com.application.rest.entities.UserEntity;
+import com.application.rest.entities.types.StatusType;
 import com.application.rest.services.IServiceService;
+import com.application.rest.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,6 +24,8 @@ import java.util.Optional;
 public class ServiceController {
     @Autowired
     private IServiceService serviceService;
+    @Autowired
+    private IUserService userService;
 
     @GetMapping("/")
     public ResponseEntity<?> findAll() {
@@ -27,7 +35,7 @@ public class ServiceController {
                         .id(service.getId())
                         .name(service.getName())
                         .description(service.getDescription())
-                        .typeService(String.valueOf(service.getTypeService()))
+                        .typeService(service.getTypeService())
                         .price(service.getPrice())
                         .status(String.valueOf(service.getStatus()))
                         .provider(service.getProvider())
@@ -46,7 +54,7 @@ public class ServiceController {
                 .id(service.getId())
                 .name(service.getName())
                 .description(service.getDescription())
-                .typeService(String.valueOf(service.getTypeService()))
+                .typeService(service.getTypeService())
                 .price(service.getPrice())
                 .status(String.valueOf(service.getStatus()))
                 .provider(service.getProvider())
@@ -56,21 +64,21 @@ public class ServiceController {
 
     @PostMapping("/")
     public ResponseEntity<?> save(@RequestBody ServiceDTO serviceDTO) throws URISyntaxException {
-        /*
-        if(userDTO.getUsername().isBlank()) return ResponseEntity.badRequest().build();
-        UserEntity user = UserEntity.builder()
-                .username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .firstname(userDTO.getFirstname())
-                .lastname(userDTO.getLastname())
-                .rol(RolType.valueOf(userDTO.getRol()))
-                .password(userDTO.getPassword())
+        if(serviceDTO.getName().isEmpty()) return ResponseEntity.badRequest().build();
+        Optional<UserEntity> provider = userService.findById(serviceDTO.getProviderId());
+        ServiceEntity service = ServiceEntity.builder()
+                .name(serviceDTO.getName())
+                .description(serviceDTO.getDescription())
+                .price(serviceDTO.getPrice())
+                .provider(provider.get())
+                .typeService(serviceDTO.getTypeService())
+                .status(StatusType.AVAILABLE)
                 .build();
 
-        suscriptionService.save(user);
-
-         */
-        return  ResponseEntity.created(new URI("/v1/api/suscription/")).body("Suscripcion creada exitosamente");
+        serviceService.save(service);
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("sucess", "Servicio creado exitosamente");
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

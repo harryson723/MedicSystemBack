@@ -123,7 +123,9 @@ public class UserController {
                 .build();
 
         userService.save(user);
-        return  ResponseEntity.created(new URI("/v1/api/user/")).body("Usuario creado exitosamente");
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("sucess", "Usuario creado exitosamente");
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
