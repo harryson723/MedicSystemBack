@@ -5,17 +5,15 @@ import com.application.rest.entities.RoleEntity;
 import com.application.rest.entities.UserEntity;
 import com.application.rest.entities.types.RolType;
 import com.application.rest.services.IUserService;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,16 +26,35 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> findAll() {
-        List<UserDTO> users = userService.findAll()
+    @GetMapping("/client")
+    public ResponseEntity<?> findAllClient() {
+        List<UserDTO> users = userService.findByRolesName(RolType.CLIENT)
                 .stream()
                 .map(user -> UserDTO.builder()
-                        .id(user.getId())
                         .username(user.getUsername())
                         .email(user.getEmail())
                         .firstname(user.getFirstname())
                         .lastname(user.getLastname())
+                        .documentNumber(user.getDocumentNumber())
+                        .documentType(user.getDocumentType())
+                        .id(user.getId())
+                        .build()
+                ).toList();
+        return  ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/provider")
+    public ResponseEntity<?> findAllProvider() {
+        List<UserDTO> users = userService.findByRolesName(RolType.PROVIDER)
+                .stream()
+                .map(user -> UserDTO.builder()
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .firstname(user.getFirstname())
+                        .lastname(user.getLastname())
+                        .documentNumber(user.getDocumentNumber())
+                        .documentType(user.getDocumentType())
+                        .id(user.getId())
                         .build()
                 ).toList();
         return  ResponseEntity.ok(users);
@@ -55,13 +72,39 @@ public class UserController {
                 .email(user.getEmail())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
+                .documentNumber(user.getDocumentNumber())
+                .documentType(user.getDocumentType())
                 .build();
         return  ResponseEntity.ok(userDTO);
     }
+    @GetMapping("/documentNumber")
+    public ResponseEntity<?> findByDocumentNumber(@RequestParam String documentNumber, @RequestParam String rol) {
+        Optional<UserEntity> userOptional = userService.findByDocumentNumberAndRolesName(documentNumber, RolType.valueOf(rol));
+        if(userOptional.isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "No existe el documento ingresado");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
 
+        UserEntity user = userOptional.get();
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .documentNumber(user.getDocumentNumber())
+                .documentType(user.getDocumentType())
+                .build();
+        return  ResponseEntity.ok(userDTO);
+    }
     @PostMapping("/")
     public ResponseEntity<?> save(@RequestBody UserDTO userDTO) throws URISyntaxException {
-        if(userDTO.getUsername().isBlank()) return ResponseEntity.badRequest().build();
+        if(userDTO.getUsername().isBlank()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "El nombre de usuario no puede estar en blanco");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
         Set<RoleEntity> rol = userDTO.getRol().stream()
                 .map(rols -> RoleEntity.builder()
                         .name(RolType.valueOf(rols))
@@ -73,12 +116,16 @@ public class UserController {
                 .email(userDTO.getEmail())
                 .firstname(userDTO.getFirstname())
                 .lastname(userDTO.getLastname())
+                .documentNumber(userDTO.getDocumentNumber())
+                .documentType(userDTO.getDocumentType())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .roles(rol)
                 .build();
 
         userService.save(user);
-        return  ResponseEntity.created(new URI("/v1/api/user/")).body("Usuario creado exitosamente");
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("sucess", "Usuario creado exitosamente");
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

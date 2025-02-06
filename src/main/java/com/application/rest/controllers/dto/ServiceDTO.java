@@ -1,6 +1,7 @@
 package com.application.rest.controllers.dto;
 
 import com.application.rest.entities.UserEntity;
+import com.application.rest.entities.types.ServiceType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class ServiceDTO {
     private String description;
     private BigDecimal price;
     private String status;
-    private String typeService;
+    private ServiceType typeService;
     private UserEntity provider;
+    private Long providerId;
 }

@@ -39,6 +39,8 @@ public class RestMedycSystemApplication {
 					.roles(Set.of(RoleEntity.builder()
 							.name(RolType.valueOf(RolType.ADMIN.name()))
 							.build()))
+					.documentNumber("1003516677")
+					.documentType("Cedula de ciudadania")
 					.build();
 
 			UserEntity userEntity2 = UserEntity.builder()
@@ -50,6 +52,8 @@ public class RestMedycSystemApplication {
 					.roles(Set.of(RoleEntity.builder()
 							.name(RolType.valueOf(RolType.CLIENT.name()))
 							.build()))
+					.documentNumber("1003516671")
+					.documentType("Cedula de ciudadania")
 					.build();
 
 			UserEntity userEntity3 = UserEntity.builder()
@@ -61,6 +65,8 @@ public class RestMedycSystemApplication {
 					.roles(Set.of(RoleEntity.builder()
 							.name(RolType.valueOf(RolType.PROVIDER.name()))
 							.build()))
+					.documentNumber("1003513677")
+					.documentType("Cedula de ciudadania")
 					.build();
 
 			userRepository.save(userEntity);

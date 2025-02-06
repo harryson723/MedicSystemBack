@@ -1,6 +1,7 @@
 package com.application.rest.persistence.impl;
 
 import com.application.rest.entities.UserEntity;
+import com.application.rest.entities.types.RolType;
 import com.application.rest.persistence.IUserDAO;
 import com.application.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,16 @@ public class UserDAOImpl implements IUserDAO {
     @Override
     public Optional<UserEntity> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public List<UserEntity> findByRolesName(RolType roleName)  {
+        return userRepository.findByRolesName(roleName);
+    }
+
+    @Override
+    public Optional<UserEntity> findByDocumentNumberAndRolesName(String documentNumber, RolType roleName) {
+        return  userRepository.findByDocumentNumberAndRolesName(documentNumber, roleName);
     }
 
     @Override

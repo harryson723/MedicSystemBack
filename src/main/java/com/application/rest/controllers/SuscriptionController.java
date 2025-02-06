@@ -4,15 +4,20 @@ import com.application.rest.controllers.dto.SuscriptionDTO;
 import com.application.rest.controllers.dto.UserDTO;
 import com.application.rest.entities.SuscriptionEntity;
 import com.application.rest.entities.UserEntity;
+import com.application.rest.entities.types.StatusType;
 import com.application.rest.services.ISuscriptionService;
+import com.application.rest.services.IUserService;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +25,8 @@ import java.util.Optional;
 public class SuscriptionController {
     @Autowired
     private ISuscriptionService suscriptionService;
+    @Autowired
+    private IUserService userService;
 
     @GetMapping("/")
     public ResponseEntity<?> findAll() {
@@ -30,7 +37,7 @@ public class SuscriptionController {
                             UserEntity client = suscription.getClient();
                             return SuscriptionDTO.builder()
                                     .id(suscription.getId())
-                                    .status(String.valueOf(suscription.getStatus()))
+                                    .status(suscription.getStatus())
                                     .provider(provider)
                                     .client(client)
                                     .build();
@@ -49,7 +56,7 @@ public class SuscriptionController {
         UserEntity client = suscription.getClient();
         SuscriptionDTO suscriptionDTO = SuscriptionDTO.builder()
                 .id(suscription.getId())
-                .status(String.valueOf(suscription.getStatus()))
+                .status(suscription.getStatus())
                 .provider(provider)
                 .client(client)
                 .build();
@@ -58,21 +65,19 @@ public class SuscriptionController {
 
     @PostMapping("/")
     public ResponseEntity<?> save(@RequestBody SuscriptionDTO suscriptionDTO) throws URISyntaxException {
-        /*
-        if(userDTO.getUsername().isBlank()) return ResponseEntity.badRequest().build();
-        UserEntity user = UserEntity.builder()
-                .username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .firstname(userDTO.getFirstname())
-                .lastname(userDTO.getLastname())
-                .rol(RolType.valueOf(userDTO.getRol()))
-                .password(userDTO.getPassword())
+        if(suscriptionDTO.getClientId().toString().isEmpty()) return ResponseEntity.badRequest().build();
+        Optional<UserEntity> client = userService.findById(suscriptionDTO.getClientId());
+        Optional<UserEntity> provider = userService.findById(suscriptionDTO.getProviderId());
+        SuscriptionEntity suscription = SuscriptionEntity.builder()
+                .status(suscriptionDTO.getStatus())
+                .provider(provider.get())
+                .client(client.get())
                 .build();
 
-        suscriptionService.save(user);
-
-         */
-        return ResponseEntity.created(new URI("/v1/api/suscription/")).body("Suscripcion creada exitosamente");
+        suscriptionService.save(suscription);
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("sucess", "Suscripcion creada exitosamente");
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

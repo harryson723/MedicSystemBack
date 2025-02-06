@@ -35,12 +35,17 @@ public class UserEntity {
     @Column(name = "username", nullable = false, unique = true, length = 30)
     private String username;
 
-
     @NotBlank
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "documentType")
+    private String documentType;
+
+    @Column(name = "documentNumber", unique = true)
+    private String documentNumber;
 
     /*
     @ElementCollection(targetClass = Permissions.class)

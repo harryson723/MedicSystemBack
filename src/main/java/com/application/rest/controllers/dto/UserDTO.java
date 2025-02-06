@@ -16,5 +16,8 @@ public class UserDTO {
     private String email;
     private String firstname;
     private String lastname;
+    private String documentNumber;
+    private String documentType;
     private Set<String> rol;
+
 }
